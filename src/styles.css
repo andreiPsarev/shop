@@ -19,33 +19,43 @@ body {
     padding: 20px;
 }
 
-/* Навигация */
+/* Навигационная панель */
 .navbar {
-    background-color: #222; /* Темный цвет для navbar */
-    color: #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 15px 20px;
+    background-color: #333; /* Более темный оттенок для барьеров */
+    color: white;
+}
+
+.navbar-content {
     display: flex;
     align-items: center;
+    width: 100%;
     justify-content: space-between;
 }
 
-.navbar ul {
-    list-style: none;
-    display: flex;
-    gap: 25px;
-}
-
-.navbar a {
-    color: #e0e0e0;
-    text-decoration: none;
+.logo {
+    font-size: 20px;
     font-weight: bold;
-    padding: 8px 15px;
-    transition: background-color 0.3s ease;
 }
 
-.navbar a:hover {
-    background-color: #333; /* Темно-серый на hover */
-    border-radius: 5px;
+.shop-name {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.cart-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cart-button:hover {
+    color: #ddd;
 }
 
 /* Заголовки */
@@ -65,6 +75,8 @@ h1 {
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    background-color: #1f1f1f; /* Темно-серый фон для секции с продуктами */
+    margin-bottom: 50px;
 }
 
 .card {
@@ -102,7 +114,7 @@ h1 {
 }
 
 .card button {
-    background-color: #3b8c3a; /* Зеленый оттенок для действия */
+    background-color: #2b6a2b; /* Темно-зеленый оттенок для действия */
     color: white;
     padding: 12px 20px;
     border: none;
@@ -114,7 +126,7 @@ h1 {
 }
 
 .card button:hover {
-    background-color: #356e2f;
+    background-color: #255d25;
 }
 
 /* Фильтры */
@@ -126,7 +138,7 @@ h1 {
 }
 
 .category-filter button {
-    background-color: #222;
+    background-color: #333;
     color: #e0e0e0;
     border: 2px solid #444;
     padding: 10px 20px;
@@ -137,15 +149,15 @@ h1 {
 }
 
 .category-filter button:hover {
-    background-color: #3b8c3a;
+    background-color: #2b6a2b;
     color: white;
-    border-color: #3b8c3a;
+    border-color: #2b6a2b;
 }
 
 .category-filter button.active {
-    background-color: #3b8c3a;
+    background-color: #2b6a2b;
     color: white;
-    border-color: #3b8c3a;
+    border-color: #2b6a2b;
 }
 
 /* Выпадающий список для выбора размера */
@@ -161,16 +173,17 @@ select {
     padding: 10px;
     font-size: 16px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     background-color: #333;
     color: #e0e0e0;
     cursor: pointer;
     transition: border-color 0.3s ease;
+    margin-bottom: 20px;
 }
 
 select:hover,
 select:focus {
-    border-color: #3b8c3a;
+    border-color: #2b6a2b;
     outline: none;
 }
 
@@ -216,7 +229,7 @@ select:focus {
     position: fixed;
     top: 50px;
     right: -350px;
-    background-color: #222;
+    background-color: #1f1f1f; /* Черный фон корзины */
     border: 1px solid #444;
     padding: 20px;
     width: 350px;
@@ -265,7 +278,7 @@ select:focus {
     padding: 10px;
     border-bottom: 1px solid #444;
     color: #e0e0e0;
-    background-color: #333;
+    background-color: #2a2a2a;
     border-radius: 5px;
 }
 
@@ -311,9 +324,7 @@ select:focus {
     color: #ff1744;
 }
 
-
-
-
+/* Цвета */
 .colors {
     display: flex;
     gap: 10px;
@@ -323,7 +334,6 @@ select:focus {
 .color-circle {
     width: 24px;
     height: 24px;
-    border-radius: 50%;
     cursor: pointer;
     border: 2px solid transparent;
     transition: transform 0.2s ease-in-out;
@@ -335,5 +345,36 @@ select:focus {
 
 .color-circle.selected {
     border: 2px solid white; /* Подсветка активного цвета */
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Контакты и карта */
+.contact-map {
+    padding: 50px 20px;
+    background-color: #2a2a2a; /* Тот же темный фон для контактов */
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.contact-info {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.contact-info h2 {
+    margin-bottom: 15px;
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+.map-container {
+    flex: 1;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 300px;
+    border: none;
 }

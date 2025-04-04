@@ -98,6 +98,27 @@ const products = [
   },
 ];
 
+
+
+const Navbar = ({ cart, toggleCart }) => {
+  return (
+    <nav className="navbar">
+      <div className="navbar-content">
+        <div className="logo">
+          <img src="/img/logo.jpg" alt="logo" width= "100"/>
+        </div>
+        <div className="shop-name">Магазин</div>
+        <button className="cart-button" onClick={toggleCart}>
+          🛒 ({cart.length})
+        </button>
+      </div>
+    </nav>
+  );
+};
+
+
+
+
 // Карточка товара
 const ProductCard = ({ product, addToCart }) => {
   const [color, setColor] = useState(product.colors[0]); // Текущий цвет
@@ -145,6 +166,7 @@ const ProductCard = ({ product, addToCart }) => {
 
 
 
+
 // Корзина
 const Cart = ({ cart, onCheckout, updateQuantity, removeItem, toggleCart }) => (
   <div className="cart">
@@ -170,7 +192,29 @@ const Cart = ({ cart, onCheckout, updateQuantity, removeItem, toggleCart }) => (
 );
 
 
-
+const ContactAndMap = () => {
+  return (
+    <section className="contact-map">
+      <div className="contact-info">
+        <h2>Контактная информация</h2>
+        <p>Адрес: ул. Примерная, 123, город</p>
+        <p>Телефон: +380 123 456 789</p>
+        <p>Email: info@example.com</p>
+      </div>
+      <div className="map-container">
+        <h3>Найдите нас на карте:</h3>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=...your_map_url_here..."
+          width="600"
+          height="450"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+        ></iframe>
+      </div>
+    </section>
+  );
+};
 
 
 
@@ -220,12 +264,7 @@ const App = () => {
   return (
     <Router>
       <div className="container">
-        <nav className="navbar">
-          <ul>
-            <li><Link to="/">Главная</Link></li>
-            <li><button onClick={toggleCart}>Корзина ({cart.length})</button></li>
-          </ul>
-        </nav>
+      <Navbar cart={cart} toggleCart={toggleCart} />
 
         <Routes>
           <Route path="/" element={
@@ -259,6 +298,8 @@ const App = () => {
 
           <Route path="/cart" element={<Cart cart={cart} onCheckout={handleCheckout} updateQuantity={updateQuantity} removeItem={removeItem} />} />
         </Routes>
+        <ContactAndMap />
+
       </div>
 
       {/* Корзина с анимацией */}
