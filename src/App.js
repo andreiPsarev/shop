@@ -2,8 +2,17 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./styles.css";
 
-import React, { useState, useEffect } from "react";
 
+
+import React, { useState, useEffect, useRef } from "react";
+import { Carousel } from 'antd';
+const contentStyle = {
+  height: '160px',
+  color: '#fff',
+  lineHeight: '160px',
+  textAlign: 'center',
+  background: '#364d79',
+};
 // Пример данных для слайдера
 const sliderItems = [
   {
@@ -26,46 +35,23 @@ const sliderItems = [
   },
 ];
 
-const Slider = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % sliderItems.length);
-    }, 5000); // 5000 мс для переключения слайдов
-
-    return () => clearInterval(interval); // Очистка интервала при размонтировании
-  }, []);
-
-  return (
-    <div className="slider">
-      <div className="slider-content">
-        <img
-          src={sliderItems[currentSlide].img}
-          alt={sliderItems[currentSlide].alt}
-          className="slider-image"
-        />
-        <h2 className="slider-title">{sliderItems[currentSlide].title}</h2>
-      </div>
-    </div>
-  );
-};
-
 
 // Пример товаров с добавленными категориями
 const products = [
   {
     id: 1,
-    name: "Футболка",
-    desc: "Хлопковая футболка",
-    price: 500,
-    image: "/img/bl-alt.jpg",
-    colors: ["Синий", "Черный"],
+    name: "Alpha Tactical Jacket",
+    desc: "Helikon-Tex® ALPHA Tactical Jacket Black - легка куртка флісова з лінійки Urban Line® створена, як основний утеплюючий шар для носіння окремо або разом з верхнім одягом. Сітчаста структура матеріалу Light Grid Fleece забезпечує додатковий комфорт: зігріває або відводить зайве тепло від тіла у верхні шари одягу, підтримуючи оптимальну та комфортну температуру.",
+    price: 2400,
+    img: "/public/img/bl-alt.jpg",
+    colors: ["Olive", "Coyote", "FolGreen", "Black"],
     sizes: ["S", "M", "L"],
     category: "Одежда", // Категория товара
     imagesByColor: {
-      Синий: "/img/bl-alt.jpg",
-      Черный: "/img/bl-alt-c.jpg",
+      Olive: "/img/alph-tact/og.jpg",
+      Coyote: "/img/alph-tact/c.jpg",
+      FolGreen: "/img/alph-tact/fg.jpg",
+      Black: "/img/alph-tact/b.jpg",
     },
   },
   {
@@ -109,7 +95,7 @@ const Navbar = ({ cart, toggleCart }) => {
         </div>
         <div className="shop-name">Магазин</div>
         <button className="cart-button" onClick={toggleCart}>
-          🛒 ({cart.length})
+        🛒 ({cart.reduce((total, item) => total + item.quantity, 0)})
         </button>
       </div>
     </nav>
@@ -125,8 +111,10 @@ const ProductCard = ({ product, addToCart }) => {
   const [size, setSize] = useState(product.sizes[0]); // Текущий размер
 
   const colorMap = {
-    Синий: "#0000FF",
-    Черный: "#000000",
+    Olive: "#636B2F",
+    Coyote: "#81613C",
+    FolGreen: "#7EA295",
+    Black: "#000000",
     Белый: "#FFFFFF",
   };
 
@@ -222,25 +210,52 @@ const App = () => {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Все");
   const [isCartVisible, setIsCartVisible] = useState(false); // Для управления видимостью корзины
+  const cartRef = useRef(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cartRef.current && !cartRef.current.contains(event.target)) {
+        setIsCartVisible(false);
+      }
+    };
+    if (isCartVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCartVisible]);
+  
   const categories = ["Все", ...new Set(products.map(p => p.category))];
 
   const filteredProducts = selectedCategory === "Все"
     ? products
     : products.filter(p => p.category === selectedCategory);
 
-  const addToCart = (product) => {
-    const existingProduct = cart.find(item => item.id === product.id && item.color === product.color && item.size === product.size);
-    if (existingProduct) {
-      setCart(cart.map(item =>
-        item.id === product.id && item.color === product.color && item.size === product.size
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
-    }
-  };
+    const addToCart = (product) => {
+      const existingProduct = cart.find(
+        item => item.id === product.id && item.color === product.color && item.size === product.size
+      );
+    
+      if (existingProduct) {
+        // просто увеличим количество
+        setCart(cart.map(item =>
+          item.id === product.id && item.color === product.color && item.size === product.size
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        ));
+      } else {
+        // новый товар — добавляем с image
+        setCart([...cart, {
+          ...product,
+          quantity: 1,
+          image: product.imagesByColor[product.color],
+        }]);
+      }
+    };
+    
 
   const updateQuantity = (item, delta) => {
     setCart(cart.map(cartItem =>
@@ -271,7 +286,16 @@ const App = () => {
             <>
               <h1>Магазин одежды</h1>
 
-              <Slider /> {/* Вставляем слайдер */}
+              <Carousel autoplay autoplaySpeed={6000} effect="fade">
+                {sliderItems.map(item => (
+                  <div key={item.id} className="carousel-slide">
+                    <img src={item.img} alt={item.alt} className="carousel-image" />
+                    <div className="carousel-caption">
+                      <h2>{item.title}</h2>
+                    </div>
+                  </div>
+                ))}
+              </Carousel>
 
 
               <div className="category-filter">
@@ -303,24 +327,25 @@ const App = () => {
       </div>
 
       {/* Корзина с анимацией */}
-      <div className={`cart ${isCartVisible ? 'show' : ''}`}>
-      <h2>Корзина</h2>
-        {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
-          <div key={index} className="cart-item">
-            <img src={item.image} alt={item.name} className="cart-item-image" />
-            <div className="cart-item-details">
-              <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
-              <div className="quantity">
-                <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item, 1)}>+</button>
-              </div>
-              <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
-            </div>
-          </div>
-        ))}
-        <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
+      <div ref={cartRef} className={`cart ${isCartVisible ? 'show' : ''}`}>
+  <button onClick={() => setIsCartVisible(false)} className="close-btn">×</button>
+  <h2>Корзина</h2>
+  {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
+    <div key={index} className="cart-item">
+      <img src={item.image} alt={item.name} className="cart-item-image" />
+      <div className="cart-item-details">
+        <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
+        <div className="quantity">
+          <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
+          <span>{item.quantity}</span>
+          <button onClick={() => updateQuantity(item, 1)}>+</button>
+        </div>
+        <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
       </div>
+    </div>
+  ))}
+  <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
+</div>
     </Router>
   );
 };
