@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./styles.css";
+import 'antd/dist/antd.css';
 
 
 
@@ -91,7 +92,7 @@ const Navbar = ({ cart, toggleCart }) => {
     <nav className="navbar">
       <div className="navbar-content">
         <div className="logo">
-          <img src="/img/logo.jpg" alt="logo" width= "100"/>
+        <img src={`${process.env.PUBLIC_URL}/img/logo.jpg`}alt="logo" width= "100"/>
         </div>
         <div className="shop-name">Магазин</div>
         <button className="cart-button" onClick={toggleCart}>
