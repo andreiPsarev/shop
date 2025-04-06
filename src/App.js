@@ -43,7 +43,7 @@ const products = [
     name: "Alpha Tactical Jacket",
     desc: "Helikon-Tex® ALPHA Tactical Jacket Black - легка куртка флісова з лінійки Urban Line® створена, як основний утеплюючий шар для носіння окремо або разом з верхнім одягом. Сітчаста структура матеріалу Light Grid Fleece забезпечує додатковий комфорт: зігріває або відводить зайве тепло від тіла у верхні шари одягу, підтримуючи оптимальну та комфортну температуру.",
     price: 2400,
-    img: "/public/img/bl-alt.jpg",
+    img: "/img/bl-alt.jpg",
     colors: ["Olive", "Coyote", "FolGreen", "Black"],
     sizes: ["S", "M", "L"],
     category: "Одежда", // Категория товара
@@ -93,7 +93,7 @@ const Navbar = ({ cart, toggleCart }) => {
         <div className="logo">
         <img src={`${process.env.PUBLIC_URL}/img/logo.jpg`}alt="logo" width= "100"/>
         </div>
-        <div className="shop-name">Магазин</div>
+        <div className="shop-name">Магазинн</div>
         <button className="cart-button" onClick={toggleCart}>
         🛒 ({cart.reduce((total, item) => total + item.quantity, 0)})
         </button>
@@ -204,7 +204,33 @@ const ContactAndMap = () => {
   );
 };
 
+// Страница магазина
+const ShopPage = () => {
+  return (
+    <div>
+      <h1>Магазин</h1>
+      <Carousel autoplay autoplaySpeed={6000} effect="fade">
+        {sliderItems.map(item => (
+          <div key={item.id} className="carousel-slide">
+            <img src={item.img} alt={item.alt} className="carousel-image" />
+            <div className="carousel-caption">
+              <h2>{item.title}</h2>
+            </div>
+          </div>
+        ))}
+      </Carousel>
 
+      <div className="category-filter">
+        {/* Категории товаров */}
+      </div>
+
+      <h2>Все товары</h2>
+      <div className="products">
+        {products.map(p => <ProductCard key={p.id} product={p} addToCart={() => {}} />)}
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -279,73 +305,33 @@ const App = () => {
   return (
     <Router>
       <div className="container">
-      <Navbar cart={cart} toggleCart={toggleCart} />
-
+        <Navbar cart={cart} toggleCart={toggleCart} />
         <Routes>
-          <Route path="/" element={
-            <>
-              <h1>Магазин одежды</h1>
-
-              <Carousel autoplay autoplaySpeed={6000} effect="fade">
-                {sliderItems.map(item => (
-                  <div key={item.id} className="carousel-slide">
-                    <img src={item.img} alt={item.alt} className="carousel-image" />
-                    <div className="carousel-caption">
-                      <h2>{item.title}</h2>
-                    </div>
-                  </div>
-                ))}
-              </Carousel>
-
-
-              <div className="category-filter">
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={selectedCategory === cat ? "active" : ""}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-
-              <h2 className="category-title">
-                {selectedCategory === "Все" ? "Все товары" : selectedCategory}
-              </h2>
-
-              <div className="products">
-                {filteredProducts.map(p => <ProductCard key={p.id} product={p} addToCart={addToCart} />)}
-              </div>
-            </>
-          } />
-
+          <Route path="/" element={<ShopPage />} />
           <Route path="/cart" element={<Cart cart={cart} onCheckout={handleCheckout} updateQuantity={updateQuantity} removeItem={removeItem} />} />
         </Routes>
-        <ContactAndMap />
-
       </div>
 
       {/* Корзина с анимацией */}
-      <div ref={cartRef} className={`cart ${isCartVisible ? 'show' : ''}`}>
-  <button onClick={() => setIsCartVisible(false)} className="close-btn">×</button>
-  <h2>Корзина</h2>
-  {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
-    <div key={index} className="cart-item">
-      <img src={item.image} alt={item.name} className="cart-item-image" />
-      <div className="cart-item-details">
-        <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
-        <div className="quantity">
-          <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
-          <span>{item.quantity}</span>
-          <button onClick={() => updateQuantity(item, 1)}>+</button>
-        </div>
-        <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
+      <div className={`cart ${isCartVisible ? 'show' : ''}`}>
+        <button onClick={() => setIsCartVisible(false)} className="close-btn">×</button>
+        <h2>Корзина</h2>
+        {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
+          <div key={index} className="cart-item">
+            <img src={item.image} alt={item.name} className="cart-item-image" />
+            <div className="cart-item-details">
+              <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
+              <div className="quantity">
+                <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => updateQuantity(item, 1)}>+</button>
+              </div>
+              <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
+            </div>
+          </div>
+        ))}
+        <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
       </div>
-    </div>
-  ))}
-  <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
-</div>
     </Router>
   );
 };
