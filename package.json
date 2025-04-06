@@ -13,7 +13,6 @@
     "serve": "^14.2.4",
     "slick-carousel": "^1.8.1"
   },
-  "homepage": "https://andreiPsarev.github.io/shop",
 "scripts": {
   "start": "react-scripts start",
   "build": "react-scripts build",

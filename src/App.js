@@ -288,15 +288,16 @@ const App = () => {
               <h1>Магазин одежды</h1>
 
               <Carousel autoplay autoplaySpeed={6000} effect="fade">
-                {sliderItems.map(item => (
-                  <div key={item.id} className="carousel-slide">
-                    <img src={item.img} alt={item.alt} className="carousel-image" />
-                    <div className="carousel-caption">
-                      <h2>{item.title}</h2>
-                    </div>
-                  </div>
-                ))}
-              </Carousel>
+  {sliderItems.map(item => (
+    <div key={item.id} className="carousel-slide">
+      <img src={item.img} alt={item.alt} className="carousel-image" />
+      <div className="carousel-caption">
+        <h2>{item.title}</h2>
+      </div>
+    </div>
+  ))}
+</Carousel>
+
 
 
               <div className="category-filter">
