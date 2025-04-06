@@ -10,14 +10,17 @@
     "react-router-dom": "^7.4.1",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.3",
+    "serve": "^14.2.4",
     "slick-carousel": "^1.8.1"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+  "homepage": "https://andreiPsarev.github.io/shop",
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+},
+
   "eslintConfig": {
     "extends": [
       "react-app",
