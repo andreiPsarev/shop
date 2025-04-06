@@ -93,7 +93,7 @@ const Navbar = ({ cart, toggleCart }) => {
         <div className="logo">
         <img src={`${process.env.PUBLIC_URL}/img/logo.jpg`}alt="logo" width= "100"/>
         </div>
-        <div className="shop-name">Магазинн</div>
+        <div className="shop-name">Магазин</div>
         <button className="cart-button" onClick={toggleCart}>
         🛒 ({cart.reduce((total, item) => total + item.quantity, 0)})
         </button>
