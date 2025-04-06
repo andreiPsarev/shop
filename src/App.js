@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles.css";
 
 
@@ -17,7 +17,7 @@ const contentStyle = {
 const sliderItems = [
   {
     id: 1,
-    img: "/img/bl-alt.jpg",
+    img: "/img/bl-alt-c.jpg",
     alt: "Слайдер 1",
     title: "Сезонные скидки!",
   },
@@ -198,39 +198,14 @@ const ContactAndMap = () => {
           style={{ border: 0 }}
           allowFullScreen=""
           loading="lazy"
+          title="gdfg"
         ></iframe>
       </div>
     </section>
   );
 };
 
-// Страница магазина
-const ShopPage = () => {
-  return (
-    <div>
-      <h1>Магазин</h1>
-      <Carousel autoplay autoplaySpeed={6000} effect="fade">
-        {sliderItems.map(item => (
-          <div key={item.id} className="carousel-slide">
-            <img src={item.img} alt={item.alt} className="carousel-image" />
-            <div className="carousel-caption">
-              <h2>{item.title}</h2>
-            </div>
-          </div>
-        ))}
-      </Carousel>
 
-      <div className="category-filter">
-        {/* Категории товаров */}
-      </div>
-
-      <h2>Все товары</h2>
-      <div className="products">
-        {products.map(p => <ProductCard key={p.id} product={p} addToCart={() => {}} />)}
-      </div>
-    </div>
-  );
-};
 
 const App = () => {
   const [cart, setCart] = useState([]);
@@ -305,33 +280,73 @@ const App = () => {
   return (
     <Router>
       <div className="container">
-        <Navbar cart={cart} toggleCart={toggleCart} />
+      <Navbar cart={cart} toggleCart={toggleCart} />
+
         <Routes>
-          <Route path="/" element={<ShopPage />} />
+          <Route path="/" element={
+            <>
+              <h1>Магазин одежды</h1>
+
+              <Carousel autoplay autoplaySpeed={6000} effect="fade">
+                {sliderItems.map(item => (
+                  <div key={item.id} className="carousel-slide">
+                    <img src={item.img} alt={item.alt} className="carousel-image" />
+                    <div className="carousel-caption">
+                      <h2>{item.title}</h2>
+                    </div>
+                  </div>
+                ))}
+              </Carousel>
+
+
+              <div className="category-filter">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={selectedCategory === cat ? "active" : ""}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              <h2 className="category-title">
+                {selectedCategory === "Все" ? "Все товары" : selectedCategory}
+              </h2>
+
+              <div className="products">
+                {filteredProducts.map(p => <ProductCard key={p.id} product={p} addToCart={addToCart} />)}
+              </div>
+            </>
+          } />
+
           <Route path="/cart" element={<Cart cart={cart} onCheckout={handleCheckout} updateQuantity={updateQuantity} removeItem={removeItem} />} />
         </Routes>
+        <ContactAndMap />
+
       </div>
 
       {/* Корзина с анимацией */}
-      <div className={`cart ${isCartVisible ? 'show' : ''}`}>
-        <button onClick={() => setIsCartVisible(false)} className="close-btn">×</button>
-        <h2>Корзина</h2>
-        {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
-          <div key={index} className="cart-item">
-            <img src={item.image} alt={item.name} className="cart-item-image" />
-            <div className="cart-item-details">
-              <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
-              <div className="quantity">
-                <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item, 1)}>+</button>
-              </div>
-              <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
-            </div>
-          </div>
-        ))}
-        <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
+      <div ref={cartRef} className={`cart ${isCartVisible ? 'show' : ''}`}>
+  <button onClick={() => setIsCartVisible(false)} className="close-btn">×</button>
+  <h2>Корзина</h2>
+  {cart.length === 0 ? <p>Корзина пуста</p> : cart.map((item, index) => (
+    <div key={index} className="cart-item">
+      <img src={item.image} alt={item.name} className="cart-item-image" />
+      <div className="cart-item-details">
+        <p>{item.name} ({item.color}, {item.size}) - {item.price} грн</p>
+        <div className="quantity">
+          <button onClick={() => updateQuantity(item, -1)} disabled={item.quantity <= 1}>-</button>
+          <span>{item.quantity}</span>
+          <button onClick={() => updateQuantity(item, 1)}>+</button>
+        </div>
+        <button onClick={() => removeItem(item)} className="remove-btn">Удалить</button>
       </div>
+    </div>
+  ))}
+  <button onClick={handleCheckout} disabled={cart.length === 0}>Оформить заказ</button>
+</div>
     </Router>
   );
 };
